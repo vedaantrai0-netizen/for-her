@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE EDIT - VISUAL DIARY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;1,6..96,400&family=Montserrat:wght@300;400;500&family=Great+Vibes&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. PALETTE --- */
+        :root {
+            --onyx-base: #050505;
+            --royal-purple: #7b2cbf;
+            --soft-pink: #ff99c8;
+            --text-white: #ffffff;
+        }
+
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow-x: hidden; background: var(--onyx-base); }
+
+        /* --- 2. LANDING PAGE --- */
+        #landing-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #151515 0%, #000000 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .brand-header {
+            position: absolute;
+            top: 40px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #ffc2d1; 
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .title-group {
+            border: 1px solid #222;
+            padding: 70px 50px;
+            background: rgba(10,10,10,0.6);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 80px rgba(157, 78, 221, 0.15); 
+        }
+
+        .fashion-year {
+            font-family: 'Bodoni Moda', serif;
+            font-style: italic;
+            font-size: 1rem;
+            color: #9d4edd;
+            margin-bottom: 20px;
+        }
+
+        .fashion-title {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 12px;
+            line-height: 1;
+            margin: 0;
+            color: #fff;
+            text-shadow: 0 0 20px #9d4edd, 0 0 40px #ffc2d1;
+        }
+
+        .fashion-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin-top: 25px;
+            color: #ccc;
+        }
+
+        .enter-btn {
+            margin-top: 60px;
+            background: transparent;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 18px 50px;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .enter-btn:hover {
+            background: var(--text-white);
+            color: #000;
+            box-shadow: 0 0 30px #ffc2d1;
+            letter-spacing: 5px;
+            border-color: #fff;
+        }
+
+        .footer-credits {
+            position: absolute;
+            bottom: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: #444;
+            text-transform: uppercase;
+        }
+
+        /* --- 3. INTERIOR --- */
+        #app {
+            display: none;
+            opacity: 0;
+            transition: opacity 2s ease;
+            background-color: var(--onyx-base);
+            background-image: radial-gradient(circle at 50% 50%, #1a0520 0%, #000000 70%);
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-white);
+            position: relative;
+        }
+
+        /* FLOATING HEARTS */
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .floating-item {
+            position: absolute;
+            bottom: -50px;
+            opacity: 0.5;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp { to { transform: translateY(-120vh) rotate(360deg); } }
+
+        /* NAV */
+        nav {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(10px);
+            margin: 0 20px;
+            border-radius: 2px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            border: 1px solid #222;
+        }
+
+        nav button {
+            background: transparent;
+            border: none;
+            font-family: 'Bodoni Moda', serif;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        nav button.active, nav button:hover { 
+            color: var(--text-white); 
+            text-shadow: 0 0 10px #ffc2d1; 
+        }
+
+        /* SECTIONS */
+        .page-section {
+            display: none;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 10;
+            animation: riseUp 1s ease-out;
+        }
+        .active-section { display: block; }
+        @keyframes riseUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .cute-header {
+            text-align: center;
+            font-family: 'Bodoni Moda', serif;
+            font-weight: 700;
+            font-size: 4rem;
+            margin-bottom: 5px;
+            letter-spacing: -2px;
+            background: linear-gradient(to right, #ff99c8, #e0aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(255, 153, 200, 0.4));
+        }
+        
+        .cute-sub {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 0.7rem;
+            color: #e0aaff;
+            margin-bottom: 60px;
+        }
+
+        /* GRID */
+        .masonry-grid {
+            column-count: 4;
+            column-gap: 30px;
+            width: 90%;
+            margin: 0 auto;
+        }
+        @media (max-width: 800px) { .masonry-grid { column-count: 2; } }
+
+        .card {
+            break-inside: avoid;
+            margin-bottom: 35px;
+            background: #080808;
+            padding: 8px; 
+            border: 1px solid #2a1035;
+            box-shadow: 0 10px 40px rgba(0,0,0,1);
+            transition: all 0.4s ease;
+            position: relative;
+            animation: floatCard 6s ease-in-out infinite;
+        }
+
+        @keyframes floatCard {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .card:hover { 
+            animation-play-state: paused;
+            transform: scale(1.05) !important;
+            box-shadow: 0 0 30px rgba(255, 153, 200, 0.4); 
+            border-color: #ff99c8;
+            z-index: 50;
+        }
+
+        .card img, .card video { width: 100%; display: block; filter: contrast(1.1); }
+
+        /* --- 4. RETRO CINEMA SECTION --- */
+        #films {
+            background-color: #000;
+            background-image: 
+                linear-gradient(to right, #111 15px, transparent 15px),
+                linear-gradient(to bottom, #000 10px, transparent 10px, transparent 20px, #000 20px),
+                linear-gradient(to left, #111 15px, transparent 15px),
+                linear-gradient(to bottom, #000 10px, transparent 10px, transparent 20px, #000 20px);
+            background-size: 100% 100%, 30px 30px, 100% 100%, 30px 30px;
+            background-position: left top, left top, right top, right top;
+            background-repeat: no-repeat, repeat-y, no-repeat, repeat-y;
+            
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
+            border-top: 1px solid var(--royal-purple);
+            border-bottom: 1px solid var(--royal-purple);
+        }
+
+        #films::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(123, 44, 191, 0.05) 50%);
+            background-size: 100% 4px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* VCR OSD */
+        .vcr-overlay {
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            color: var(--soft-pink);
+            text-shadow: 0 0 5px var(--soft-pink);
+            z-index: 20;
+            pointer-events: none;
+        }
+        
+        .rec-dot {
+            display: inline-block;
+            width: 15px; height: 15px;
+            background-color: var(--royal-purple);
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: blink 1s infinite;
+        }
+        
+        .vcr-time {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 0 0 5px #fff;
+            z-index: 20;
+        }
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+
+        /* FILM CARDS */
+        .film-card {
+            width: 560px;
+            max-width: 100%;
+            background: #0a0a0a;
+            padding: 15px 15px 40px 15px;
+            border: 2px solid #222;
+            box-shadow: 5px 5px 0px var(--royal-purple);
+            margin-bottom: 30px;
+            position: relative;
+            transition: 0.3s;
+        }
+        
+        .film-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0px var(--soft-pink);
+        }
+
+        .film-label {
+            font-family: 'VT323', monospace;
+            color: #fff;
+            font-size: 1.5rem;
+            margin-top: 10px;
+            text-align: left;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* POEM CONTAINER */
+        .poem-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(10, 10, 10, 0.95);
+            padding: 70px;
+            border-left: 3px solid #ff99c8;
+            border-right: 1px solid #333;
+            border-top: 1px solid #222;
+            border-bottom: 1px solid #222;
+            box-shadow: 0 0 50px rgba(123, 44, 191, 0.15); 
+            position: relative;
+            text-align: left;
+        }
+
+        .poem-container p {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            font-weight: 500;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        .poem-container::before {
+            content: '❥'; 
+            display: block;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ff99c8;
+        }
+
+        /* PROPOSAL SECTION */
+        .proposal-wrap {
+            text-align: center;
+            margin-top: 80px;
+            padding: 80px;
+            background: #080808;
+            max-width: 600px;
+            margin: 80px auto;
+            border: 1px solid #331040;
+            box-shadow: 0 0 40px rgba(123, 44, 191, 0.2);
+            position: relative;
+        }
+
+        /* The Drama Image (Shown by default) */
+        #drama-img {
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--royal-purple);
+            display: block; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .button-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px; 
+            min-height: 150px; 
+            position: relative;
+        }
+
+        .yes-btn {
+            background: linear-gradient(45deg, var(--royal-purple), #c77dff);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-family: 'Bodoni Moda';
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(123, 44, 191, 0.4);
+            transition: transform 0.3s ease; 
+            z-index: 100;
+        }
+        .yes-btn:hover { 
+            background: linear-gradient(45deg, #ff99c8, #ffc2d1);
+            color: #000;
+            box-shadow: 0 5px 30px rgba(255, 153, 200, 0.5); 
+        }
+        
+        .no-btn {
+            background: #000;
+            color: #666;
+            border: 1px solid #333;
+            padding: 15px 40px;
+            text-transform: uppercase;
+            font-family: 'Bodoni Moda';
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 101;
+        }
+
+        .final-video {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 0 30px var(--royal-purple);
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop><source src="song.mp3" type="audio/mp3"></audio>
+
+    <div id="landing-screen">
+        <div class="brand-header">EST. 2026 • THE ARCHIVE</div>
+        <div class="title-group">
+            <div class="fashion-year">Volume I</div>
+            <h1 class="fashion-title">Valentine</h1>
+            <div class="fashion-subtitle">The Collection</div>
+        </div>
+        <button class="enter-btn" onclick="enterSite()">View Collection</button>
+        <div class="footer-credits">Paris • London • New York • Yours</div>
+    </div>
+
+    <div id="app">
+        <div class="bg-layer" id="bg-container"></div>
+
+        <nav>
+            <button onclick="show(this, 'gallery')" class="active">Moments</button>
+            <button onclick="show(this, 'poem')">Letter</button>
+            <button onclick="show(this, 'films')">Cinema</button>
+            <button onclick="show(this, 'proposal')">Forever</button>
+        </nav>
+
+        <div id="gallery" class="page-section active-section">
+            <div class="cute-header">The Moments</div>
+            <div class="cute-sub">A Visual Diary</div>
+            <div class="masonry-grid" id="grid"></div>
+        </div>
+
+        <div id="poem" class="page-section">
+            <div class="cute-header">For You</div>
+            <div class="cute-sub">Written in Ink</div>
+            <div class="poem-container">
+                <p>
+                    Keep your name like a coin in my mouth — turning it over when the bus shudders, flint against teeth, a small cold promise. It jingles in pockets, in the hollow of shirts, in the ribbed place where a sweater used to be, and when the sweater breathes it smells like you: coffee at midnight, rain in the city, the quiet of a streetlamp that doesn’t judge.<br><br>
+                    
+                    There are mornings I wake with your shadow in the doorway, not the whole you, only the idea — a soft outline that presses its palm to the glass of my chest. I call it memory, but it answers in your voice and I am someone who believes letters can become bridges. I send a message into the fog of my phone and half the time it lands as a wish, the other half it becomes a pulse I can measure.<br><br>
+
+                    Do you know what I carry when I try to sleep? A small compass of your laugh, a match struck once and never quite burned out. I trace the rim of that laugh with my thumb until dawn presses in, and I imagine you — breathing, a stray sun on your hair, looking up and wondering if I might still be there. If you were a room, you’d be all windows. I’d stand inside and learn every way light finds you.<br><br>
+
+                    There is a perfume in my pockets — not the bottle, but a ghost of the way you moved through my day. It clings to the collar that still smells like you, to the hoodie you left, to the book with your bookmark. I press my face to the fabric as if the thread could teach me the map of you: how you fold your hands, which side you sleep on, what you hum when the kettle boils. Memory becomes a classroom where I keep failing to learn how to stop loving you.<br><br>
+
+                    Sometimes I replay the small things — the way your elbow brushed mine, the joke you didn’t finish, the tiny war over the last fry. They are relics, papers in between pages of my chest. I polish them, arrange them on the bedside table, pretend they are trophies for having survived you. Then night comes and turns them into stars, and I read constellations that spell your name in a language only people in love seem able to understand.<br><br>
+
+                    If missing you had a sound it would be my silence after midnight, the way the city lets go of itself and listens. I speak into that silence sometimes and the syllables come back like small, uncertain birds: please, come back, be honest, be mine, be Valentine. It’s not a demand — only an asking, a slow-opening palm. I want to hand you a paper heart and mean every crease, every uneven fold a promise to try, to be better, to stay.<br><br>
+
+                    I picture Valentine’s Day as a quiet rebellion: two mugs on a counter, steam writing maps in the air, you laughing about the cookies I burned, me pretending not to notice. I want to be the one who answers when you say "do you remember?" and actually does. I want to be the keeper of your morning, the person who knows where your socks disappear to, the one who can make you smile when your phone dies and the world feels far away. I want to be the warm corner of your day you don’t want to give up.<br><br>
+
+                    There are nights I dream we are made of simpler things — salt and sunlight, orange peels and the sticky sweetness of candy hearts spelled with silly beliefs. You hand me one and it reads "stay" and I pretend the letters were always meant to be gospel. When I wake, the dream is a bruise — beautiful, tender — and I press it with my palm to see if color returns. Sometimes it does. Sometimes it fades into the wash of day.<br><br>
+
+                    Love is not only grand gestures. It’s learning the exact pressure to hold a hand when the film is sad, it’s folding your laundry with attention like prayer, it’s hiding my worst jokes in pockets so they won’t be lonely. I will learn your rhythms if you teach me, I will memorize the way your silence tells me something before you say it aloud. I will practice patience like scales, one small chord at a time, until I can play a song that belongs only to us.<br><br>
+
+                    Forgive me for the nights my heart invents scenes where you choose me without hesitation. Forgive the way I keep rehearsing entrances and then freeze when the door really opens. I am clumsy with courage — I write you messages in notebooks and then tear the pages out, I rehearse apologies like speeches and then mumble at the cafe. But know this: every misstep was an attempt to arrive.<br><br>
+
+                    If I could, I would wrap the months we missed into a ribbon and hand them to you on the porch, an offering of time. I would stitch new Saturdays into the holes of old Sundays, make constellations of our small, stubborn rituals. I’d plant a garden where every bloom remembers your name, and when the first red rose opens, that would be my invitation: will you be mine, for one day and for all the days after?<br><br>
+
+                    I have kept a list of things I love about you, things that are not loud but steady: the way you tilt your head when thinking, the freckle near your left thumb, the way rain seems to find you. I read the list when I am afraid you won’t return. I read it until the words become skin, until I can feel you in the space beside me. If lists are maps, then let mine be the road I walk to find you.<br><br>
+
+                    There are moments I see you in strangers: the way someone tucks hair behind an ear, a laugh that slides out like a coin. I stop, heart in my throat, hoping for recognition, for a sign that echoes you. It’s never the same, of course. But the hope that it might be is a kindness I give myself on bad days. Because loving you taught me how to notice tenderness everywhere.<br><br>
+
+                    Valentine — a silly, saccharine word, but also a doorway. I want you to walk through it with me, if you will. No fireworks necessary. Just the small, steady light of two people choosing the same quiet room. I will bring the playlist we made once and forgot, and you can bring that smile that always finds me. We will share fries over books, talk until the coffee turns bitter and our eyelids grow heavy with honest sleep.<br><br>
+
+                    If I could bottle the way I feel — not the perfume, but the honest gravity of it — I would label it "home." You could keep it on your shelf and breathe it when lonely, and it would not be a fix, but a reminder: someone is out in the dark practicing saying your name as a way to hold on to you. Someone believes in "we" as if it were a fact not yet written but inevitable.<br><br>
+
+                    I will not promise perfection; I will promise effort. I will not promise to never be scared; I will promise to hold your fears like fragile glass and not drop them. I will not promise the world; I will promise my hands. They are steady, sometimes trembling, always reaching. I will be your calculator of small mercies: a text at noon, a sweater on chilled days, the kind of listening that is an act of devotion.<br><br>
+
+                    Today, tonight, the thought of you is a lighthouse — a single beam that keeps the tides from confusing me. I am learning to trust light again, to follow it into rooms where I used to be alone. I am learning to fold my longing into something that looks like hope: patient, resilient, willing to wait at the train station if it means seeing you step off. I will wait with a ticket in my pocket that reads your name.<br><br>
+
+                    So on this Valentine’s, if your heart is quiet and undecided, know that mine is simple and loud: I miss you, I love you, I want you to be my valentine — not just for the day but for the little ordinary things that make a life: the shared umbrella, the whispered goodnights, the pancakes. If you say yes, I will count the minutes between us as treasure. If you say no, I will still carry you gently, like a song that plays on repeat because it once made me brave.<br><br>
+
+                    Take this poem as a door with a small lock. Turn the knob, if you are curious. Look inside. There you will find an honest room: no crowns, no pretense, just a person who remembers you with tenderness and wants to try again. If love is a risk, let us be foolish together. If it is a miracle, let us be witnesses to it.<br><br>
+
+                    And if, by some mercy, you choose me, I will learn the map of your mornings and become fluent in your afternoons. I will make holidays out of Tuesdays and carve out a kingdom from all the quiet, ordinary days in between. I will show up, imperfect and steady, with a laugh ready, a hand open, and a heart that keeps learning the weight of yours. Be my valentine — and let us begin, simply, again.
+                </p>
+                <p style="text-align: right; margin-top: 20px; font-style: italic;">— Yours.</p>
+            </div>
+        </div>
+
+        <div id="films" class="page-section">
+            <div class="vcr-overlay">
+                <span class="rec-dot"></span>REC
+            </div>
+            <div class="vcr-time">
+                FEB 14 2026<br>00:00:00
+            </div>
+            
+            <div class="cute-header" style="text-shadow: 0 0 10px #7b2cbf;">Cinema</div>
+            <div class="cute-sub" style="color:#aaa;">REWIND THE TAPE</div>
+            
+            <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                
+                <div class="film-card">
+                    <iframe width="100%" height="250" 
+                        src="https://www.youtube.com/embed/739x0C6yA9A?si=0-npRV2tPlkG6xsC" 
+                        title="Tape 1" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                    </iframe>
+                    <div class="film-label">TAPE_01: Thoughts</div>
+                </div>
+
+                <div class="film-card">
+                    <iframe width="100%" height="250" 
+                        src="https://www.youtube.com/embed/3cycttWY_uc?si=CxraRGP5i1bs6rzn" 
+                        title="Tape 2" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                    </iframe>
+                    <div class="film-label">TAPE_02: The Supercut</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="proposal" class="page-section">
+            <div class="cute-header">One Question</div>
+            <div class="proposal-wrap">
+                
+                <img id="drama-img" src="nopics/no1.jpeg" alt="Drama" style="max-width: 300px; height: auto; border-radius: 10px; margin-bottom: 20px; border: 1px solid #7b2cbf; display: block; margin-left: auto; margin-right: auto;">
+                
+                <p id="question-label" style="font-family:'Bodoni Moda'; font-size: 1.5rem; margin-bottom: 30px; color: #fff;">Will you be my Valentine?</p>
+                
+                <div class="button-area">
+                    <button id="yes-btn" class="yes-btn" onclick="sheSaidYes()">Yes! 💜</button>
+                    <button class="no-btn" id="no-btn" onclick="handleNoClick()">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- NAVIGATION ---
+        function enterSite() {
+            document.getElementById('landing-screen').style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+                document.getElementById('app').style.display = 'block';
+                setTimeout(() => document.getElementById('app').style.opacity = '1', 100);
+            }, 500);
+            document.getElementById('bg-music').play();
+            setInterval(createFloaty, 600);
+        }
+
+        function createFloaty() {
+            const el = document.createElement('div');
+            el.className = 'floating-item';
+            el.innerHTML = Math.random() > 0.5 ? '💜' : '💗'; 
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.fontSize = Math.random() * 20 + 10 + 'px';
+            el.style.animationDuration = Math.random() * 5 + 8 + 's';
+            document.getElementById('bg-container').appendChild(el);
+            setTimeout(() => el.remove(), 13000);
+        }
+
+        function show(btn, id) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-section'));
+            document.getElementById(id).classList.add('active-section');
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- 2. GALLERY GRID (Smart Media Loader) ---
+        const grid = document.getElementById('grid');
+        
+        // Adjust this number to how many files you have
+        const totalFiles = 175; 
+
+        for(let i=1; i<=totalFiles; i++) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // Random float animation speed for organic feel
+            card.style.animationDelay = Math.random() * 5 + 's';
+            card.style.animationDuration = (Math.random() * 3 + 4) + 's';
+
+            // 1. Create a placeholder image element
+            const img = document.createElement('img');
+            
+            // 2. TRY loading .jpeg first (love (1).jpeg)
+            img.src = `images/love (${i}).jpeg`;
+            img.loading = "lazy";
+
+            // 3. If .jpeg fails, try .jpg (love (1).jpg)
+            img.onerror = function() {
+                const jpg = document.createElement('img');
+                jpg.src = `images/love (${i}).jpg`;
+                
+                // If .jpg loads, swap it in
+                jpg.onload = function() { img.replaceWith(jpg); }
+                
+                // 4. If .jpg fails, try .mp4 (lv1.mp4)
+                jpg.onerror = function() {
+                    const vid = document.createElement('video');
+                    vid.src = `images/lv${i}.mp4`;
+                    
+                    // Make video look cool (autoplay, loop, muted)
+                    vid.autoplay = true;
+                    vid.loop = true;
+                    vid.muted = true;
+                    vid.playsInline = true;
+                    vid.style.width = "100%"; // Ensure it fits the card
+                    
+                    // If video works, swap it in
+                    vid.onloadeddata = function() { img.replaceWith(vid); }
+                    
+                    // 5. If EVERYTHING fails (no file found), hide the card
+                    vid.onerror = function() { card.style.display = 'none'; }
+                }
+            }
+
+            card.appendChild(img);
+            grid.appendChild(card);
+        }
+
+        // --- DRAMA LOGIC ---
+        let noClickCount = 0; 
+        let yesButtonScale = 1;
+        let noButtonScale = 1;
+
+        const rejectMessages = [
+            "Wait... Think again! My heart is literally shattering! 😩", 
+            "Is this really how it ends? Just like that?? 🧐", 
+            "Please... I’m begging on my knees! 🥺", 
+            "You’re actually going to leave me in the cold?! 🥀", 
+            "NOW you just being mean", 
+            "The tears are coming... I hope you're happy! 😭", 
+            "You have officially broken me into a million pieces. 💔"
+        ];
+
+        function handleNoClick() {
+            const noBtn = document.getElementById('no-btn');
+            const yesBtn = document.getElementById('yes-btn');
+            const label = document.getElementById('question-label');
+            const dramaImg = document.getElementById('drama-img');
+
+            if (noClickCount < rejectMessages.length) {
+                // Update Text
+                label.innerText = rejectMessages[noClickCount];
+                
+                // Update Image logic:
+                // Start with no1.jpeg displayed. 
+                // Click 0 -> show no2.jpeg
+                const nextImgNum = Math.min(noClickCount + 2, 7);
+                dramaImg.src = `nopics/no${nextImgNum}.jpeg`;
+
+                // YES gets bigger
+                yesButtonScale += 0.4;
+                yesBtn.style.transform = `scale(${yesButtonScale})`;
+
+                // NO gets smaller
+                noButtonScale -= 0.1;
+                noBtn.style.transform = `scale(${noButtonScale})`;
+                
+                noClickCount++;
+            } else {
+                noBtn.style.display = 'none';
+                label.innerText = "Okay, you win. The No button is gone. You have to love me now. 🥺";
+            }
+        }
+
+        function sheSaidYes() {
+            document.body.innerHTML = `
+                <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:var(--onyx-base); color:var(--text-white); padding: 20px; text-align: center;">
+                    <h1 style="font-family:'Bodoni Moda'; font-size:4rem; text-shadow: 0 0 20px var(--soft-pink); margin-bottom: 30px;">She Said Yes! 💜</h1>
+                    <video class="final-video" width="500" autoplay loop muted playsinline>
+                        <source src="happy.mp4" type="video/mp4">
+                    </video>
+                    <p style="font-family:'Montserrat'; letter-spacing:4px; margin-top:30px; color:var(--soft-pink); text-transform: uppercase;">The most beautiful moment in the collection.</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
